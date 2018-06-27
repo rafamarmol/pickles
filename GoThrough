@@ -49,19 +49,9 @@ ActiveWorkbook.SaveAs Filename:=MyFolder & "FlightInfo.xlsx", FileFormat:= _
 ''''''''''''''''''''''''''
 
 
-Dim minutes As Integer
-Dim Full As Boolean
-If MsgBox("Is This A Full Flight", vbQuestion + vbYesNo, "Full Flight?") = vbYes Then
-    Full = True
-    minutes = InputBox("Minutes Removed from the Full Flight", "Minutes", 10) 'Default 10 min
-Else
-    Full = False
-    minutes = 0
-End If
 
-
-
-
+    Dim minutes As Integer
+    Dim Full As Boolean
 
 
 
@@ -79,7 +69,16 @@ Do While MyFile <> ""
    Set wbk = Workbooks.Open(Filename:=MyFolder & MyFile)
 
    'Replace the line below with the statements you would want your macro to perform
-
+   
+   If counter = 1 Then
+        If MsgBox("Is This A Full Flight", vbQuestion + vbYesNo, "Full Flight?") = vbYes Then
+            Full = True
+            minutes = InputBox("Minutes Removed from the Full Flight", "Minutes", 10) 'Default 10 min
+        Else
+            Full = False
+            minutes = 0
+        End If
+    End If
 
 
 Call DataGather(Full, minutes)
@@ -89,7 +88,7 @@ Call DataGather(Full, minutes)
 
 Windows("FlightInfo.xlsx").Activate
 Range("A2").Select
-If Selection.Value = Null Then
+If Selection.Value = Empty Then
 ActiveSheet.Paste
 Else
 Selection.End(xlDown).Offset(1, 0).Select
