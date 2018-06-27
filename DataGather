@@ -1,7 +1,7 @@
 Sub DataGathers()
 ' DataGather Macro
 ' Keyboard Shortcut: Ctrl+Shift+M
-Call DataGather(False, 0)
+Call DataGather(True, 2)
 End Sub
 
 Sub DataGather(Full As Boolean, minutes As Integer)
@@ -42,12 +42,12 @@ WS_Count = ActiveWorkbook.Worksheets.Count
     If Full Then
         Dim remove As Integer
         remove = 600 * minutes
-        Worksheets("data").Cells(remove + 2, 1).Select
-        Worksheets("data").Range(Selection, "A3").Select
+        Worksheets("data").Cells(remove + 3, 1).Select
+        Worksheets("data").Range(Selection, "A4").Select
         Worksheets("data").Range(Selection, Selection.End(xlToRight)).Delete
-        Worksheets("data").Range("A3").Select
+        Worksheets("data").Range("A4").Select
         Selection.End(xlDown).Select
-        ActiveCell.Offset(-remove, 0).Select
+        Selection.Offset(-remove, 0).Select
         Range(Selection, Selection.End(xlDown)).Select
         Range(Selection, Selection.End(xlToRight)).Delete
     End If
@@ -78,7 +78,7 @@ WS_Count = ActiveWorkbook.Worksheets.Count
     Worksheets("data").Range("A2").Select
     Worksheets("data").Range(Selection, Selection.End(xlToRight)).Select
     Worksheets("data").Range(Selection, Selection.End(xlDown)).Select
-    Selection.Cut
+    Selection.Copy
 End Sub
 
 Function IsInArray(stringToBeFound As String, arr As Variant) As Boolean
