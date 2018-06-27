@@ -1,7 +1,7 @@
 Sub DataGathers()
 ' DataGather Macro
 ' Keyboard Shortcut: Ctrl+Shift+M
-Call DataGather(False, 0)
+Call DataGather(True, 1)
 End Sub
 
 Sub DataGather(Full As Boolean, minutes As Integer)
@@ -40,6 +40,22 @@ WS_Count = ActiveWorkbook.Worksheets.Count
     'deleting 3rd row
     Sheets("data").Select
     Worksheets("data").Rows(3).Delete
+    
+    'removing rows based on user determined minutes
+    If Full Then
+        Dim remove As Integer
+        remove = 600 * minutes
+        Worksheets("data").Cells(remove + 2, 1).Select
+        Worksheets("data").Range(Selection, "A3").Select
+        Worksheets("data").Range(Selection, Selection.End(xlToRight)).Delete
+        Worksheets("data").Range("A3").Select
+        Selection.End(xlDown).Select
+        ActiveCell.Offset(-remove, 0).Select
+        Range(Selection, Selection.End(xlDown)).Select
+        Range(Selection, Selection.End(xlToRight)).Delete
+    End If
+    
+    
     
     
     
