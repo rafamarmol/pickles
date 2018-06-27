@@ -1,12 +1,11 @@
-Sub DataGather()
-'
+Sub DataGathers()
 ' DataGather Macro
-'
 ' Keyboard Shortcut: Ctrl+Shift+M
-'
-Private Sub ToggleButton1_Click()
+Call DataGather(False, 0)
+End Sub
 
-    WS_Count = ActiveWorkbook.Worksheets.Count
+Sub DataGather(Full As Boolean, minutes As Integer)
+WS_Count = ActiveWorkbook.Worksheets.Count
     'Creating new sheet named 'data'
     Sheets.Add(After:=Sheets(WS_Count)).Name = "data"
     Dim I As Integer
@@ -17,7 +16,7 @@ Private Sub ToggleButton1_Click()
             Worksheets(I).Range("B1:B2").Select
             Worksheets(I).Range(Selection, Selection.End(xlToRight)).Select
             Worksheets(I).Range(Selection, Selection.End(xlDown)).Select
-            Selection.Cut
+            Selection.Copy
             'paste values into 'data' sheet
             Sheets("data").Select
             Worksheets("data").Range("B1").Select
@@ -27,7 +26,7 @@ Private Sub ToggleButton1_Click()
                 Sheets(I).Select
                 Worksheets(I).Range("A4").Select
                 Worksheets(I).Range(Selection, Selection.End(xlDown)).Select
-                Selection.Cut
+                Selection.Copy
                 Sheets("data").Select
                 Worksheets("data").Range("A4").Select
                 Worksheets("data").Paste
@@ -56,4 +55,3 @@ Private Sub ToggleButton1_Click()
     Worksheets("data").Range(Selection, Selection.End(xlDown)).Select
     Selection.Cut
 End Sub
-
