@@ -1,7 +1,7 @@
 Sub DataGathers()
 ' DataGather Macro
 ' Keyboard Shortcut: Ctrl+Shift+M
-Call DataGather(True, 1)
+Call DataGather(False, 0)
 End Sub
 
 Sub DataGather(Full As Boolean, minutes As Integer)
@@ -37,11 +37,8 @@ WS_Count = ActiveWorkbook.Worksheets.Count
             End If
         End If
     Next I
-    'deleting 3rd row
-    Sheets("data").Select
-    Worksheets("data").Rows(3).Delete
-    
-    'removing rows based on user determined minutes
+
+    'deleting rows
     If Full Then
         Dim remove As Integer
         remove = 600 * minutes
@@ -55,14 +52,26 @@ WS_Count = ActiveWorkbook.Worksheets.Count
         Range(Selection, Selection.End(xlToRight)).Delete
     End If
     
+
+
+    'deletes columns
+    Dim myrng As Range
+    Dim WhatToFind As Variant
+    Dim lastCol As Integer
+    Sheets("data").Select
+    Set myrng = Worksheets("data").Range("B1").End(xlToRight)
+    WhatToFind = Array("SSM", "BLANK", "[DEC]", "[DIC]", "%")
+    lastCol = myrng.Columns(myrng.Columns.Count).Column
+    For j = lastCol To 2 Step -1
+        If IsInArray(Worksheets("data").Cells(3, j).Value, WhatToFind) Or IsInArray(Worksheets("data").Cells(2, j).Value, WhatToFind) Or IsInArray(Worksheets("data").Cells(1, j).Value, WhatToFind) Then
+            Worksheets("data").Columns(Worksheets("data").Cells(3, j).Column).EntireColumn.Delete
+        End If
+    Next j
     
-    
-    
-    
-    'luis code
-    'should leave 1 row header and the rest data
-    
-    
+    'deleting 2nd and 3rd row
+    Sheets("data").Select
+    Worksheets("data").Rows(3).EntireRow.Delete
+    Worksheets("data").Rows(2).EntireRow.Delete
     
     
     'cuts everything except first row for GoThrough() module
@@ -71,3 +80,9 @@ WS_Count = ActiveWorkbook.Worksheets.Count
     Worksheets("data").Range(Selection, Selection.End(xlDown)).Select
     Selection.Cut
 End Sub
+
+Function IsInArray(stringToBeFound As String, arr As Variant) As Boolean
+
+    IsInArray = (UBound(Filter(arr, stringToBeFound)) > -1)
+
+End Function
