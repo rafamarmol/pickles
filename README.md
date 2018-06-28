@@ -3,16 +3,14 @@
 SetUp:
 - Open a new excel worksheet
 - Go to the view tab and click on the drop down under 'Macros' and click on 'Record Macro'
-- Name it anything you want
-- For shortcut key input a key you will remember that will run the macros 
-  - I use Ctrl+Shift+K for GoThrough()
-  - I use Ctrl+Shift+M for DataGather()
+- Name it 'CollectData"
+- For shortcut key input 'Ctrl+Shift+K'
 - IMPORTANT : Store macro in 'Personal Macro WorkBook'
 - Again click on the drop down under 'Macros' and click on 'Stop Recording Macro'
 - Go to the developer tab and click on 'Visual Basic' all the way to the left
 - Expand 'VBAProject (Personal.XLSB)' then expand 'modules'
 - Click on the newly created module and paste DataGather() into the new module and save
-- Repeat for GoThrough()
+
 
 Implementation:
 - Have all the files you wish to grab data from and put them in a folder
