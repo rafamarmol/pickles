@@ -4,13 +4,7 @@ Sub CollectData()
 '
 ' Keyboard Shortcut: Ctrl+Shift+D
 '
-End Sub
-
-
-Sub DataGathers()
-' DataGather Macro
-' Keyboard Shortcut: Ctrl+Shift+M
-Call DataGather(True, 2)
+Call GoThrough
 End Sub
 
 Sub DataGather(Full As Boolean, minutes As Integer)
