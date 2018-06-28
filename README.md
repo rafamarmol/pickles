@@ -9,15 +9,16 @@ SetUp:
 - Again click on the drop down under 'Macros' and click on 'Stop Recording Macro'
 - Go to the developer tab and click on 'Visual Basic' all the way to the left
 - Expand 'VBAProject (Personal.XLSB)' then expand 'modules'
-- Click on the newly created module and paste DataGather() into the new module and save
+- Click on the newly created module and paste CollectData() (found in this github) under the 'End Sub' in the new module and save
 
 
 Implementation:
 - Have all the files you wish to grab data from and put them in a folder
   - I created a folder named 'FlightData' in "...Machine Learning in Flight Test\Data\MRJ"
-- Open Excel
-- Use the shortcut for GoThrough() (Ctrl+Shift+K)
+- Open Excel to a untouched blanks workbook
+- Use the shortcut for CollectData() (Ctrl+Shift+D)
 - Select the Folder ('FlightData') where the files are stored
--  Use the shortcut again for GoThrough() and selet the same folder again
-- Wait... and Click okay when "Done" is displayed
+- It should Open a new Workbook
+- Use the shortcut again for CollectData() and selet the same folder again
+- Wait... and Follow the on screen instruction until "Done' appears
 - You should now have a file names 'FlightInfo.csv" in the folder
