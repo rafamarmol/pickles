@@ -89,7 +89,7 @@ End If
                 Worksheets(I).Range("B1").Select
                 Worksheets(I).Range(Selection, Selection.End(xlToRight)).Select
                 Worksheets(I).Range(Selection, Selection.End(xlDown)).Select
-                Selection.Copy
+                Selection.Cut
                 'paste values into 'data' sheet
                 Sheets("data").Select
                 Worksheets("data").Range("B1").Select
@@ -99,7 +99,7 @@ End If
                     Sheets(I).Select
                     Worksheets(I).Range("A4").Select
                     Worksheets(I).Range(Selection, Selection.End(xlDown)).Select
-                    Selection.Copy
+                    Selection.Cut
                     Sheets("data").Select
                     Worksheets("data").Range("A4").Select
                     Worksheets("data").Paste
