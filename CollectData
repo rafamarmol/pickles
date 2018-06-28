@@ -1,226 +1,135 @@
-Sub CollectData()
-'
-' CollectData Macro
-'
-' Keyboard Shortcut: Ctrl+Shift+D
-'
-Call GoThrough
-End Sub
-
-Sub DataGather(Full As Boolean, minutes As Integer)
-WS_Count = ActiveWorkbook.Worksheets.Count
-    'Creating new sheet named 'data'
-    Sheets.Add(After:=Sheets(WS_Count)).Name = "data"
-    Dim I As Integer
-    For I = 1 To WS_Count
-        Worksheets(I).Select
-        If Worksheets(I).Name <> "Summary" And Worksheets(I).Name <> "Run Info" Then
-            'grab values from a sheet
-            Worksheets(I).Range("B1:B2").Select
-            Worksheets(I).Range(Selection, Selection.End(xlToRight)).Select
-            Worksheets(I).Range(Selection, Selection.End(xlDown)).Select
-            Selection.Copy
-            'paste values into 'data' sheet
-            Sheets("data").Select
-            Worksheets("data").Range("B1").Select
-            If Selection.Value = Empty Then 'fist time case
-                Worksheets("data").Paste
-                'adding times
-                Sheets(I).Select
-                Worksheets(I).Range("A4").Select
-                Worksheets(I).Range(Selection, Selection.End(xlDown)).Select
-                Selection.Copy
-                Sheets("data").Select
-                Worksheets("data").Range("A4").Select
-                Worksheets("data").Paste
-                Worksheets("data").Range("A1").ColumnWidth = 25
-            Else
-                Selection.End(xlToRight).Offset(0, 1).Select
-                Worksheets("data").Paste
-            End If
-        End If
-    Next I
-
-    'deleting rows
-    If Full Then
-        Dim remove As Integer
-        remove = 600 * minutes
-        Worksheets("data").Cells(remove + 3, 1).Select
-        Worksheets("data").Range(Selection, "A4").Select
-        Worksheets("data").Range(Selection, Selection.End(xlToRight)).Delete
-        Worksheets("data").Range("A4").Select
-        Selection.End(xlDown).Select
-        Selection.Offset(-remove, 0).Select
-        Range(Selection, Selection.End(xlDown)).Select
-        Range(Selection, Selection.End(xlToRight)).Delete
-    End If
-    
-
-
-    'deletes columns
-    Dim myrng As Range
-    Dim WhatToFind As Variant
-    Dim lastCol As Integer
-    Sheets("data").Select
-    Set myrng = Worksheets("data").Range("B1").End(xlToRight)
-    WhatToFind = Array("SSM", "BLANK", "[DEC]", "[DIC]", "%")
-    lastCol = myrng.Columns(myrng.Columns.Count).Column
-    For j = lastCol To 2 Step -1
-        If IsInArray(Worksheets("data").Cells(3, j).Value, WhatToFind) Or IsInArray(Worksheets("data").Cells(2, j).Value, WhatToFind) Or IsInArray(Worksheets("data").Cells(1, j).Value, WhatToFind) Then
-            Worksheets("data").Columns(Worksheets("data").Cells(3, j).Column).EntireColumn.Delete
-        End If
-    Next j
-    
-    'deleting 2nd and 3rd row
-    Sheets("data").Select
-    Worksheets("data").Rows(3).EntireRow.Delete
-    Worksheets("data").Rows(2).EntireRow.Delete
-    
-    
-    'cuts everything except first row for GoThrough() module
-    Worksheets("data").Range("A2").Select
-    Worksheets("data").Range(Selection, Selection.End(xlToRight)).Select
-    Worksheets("data").Range(Selection, Selection.End(xlDown)).Select
-    Selection.Copy
-End Sub
-
-Function IsInArray(stringToBeFound As String, arr As Variant) As Boolean
-
-    IsInArray = (UBound(Filter(arr, stringToBeFound)) > -1)
-
-End Function
-
-
-Sub GoThrough()
+Sub DataSeperator()
 '
 ' Macro1 Macro
 '
-' Keyboard Shortcut: Ctrl+Shift+K
+' Keyboard Shortcut: Ctrl+Shift+Z
 '
-Dim MyFolder As String 'Path collected from the folder picker dialog
-
-   Dim MyFile As String 'Filename obtained by DIR function
-
-   Dim wbk As Workbook 'Used to loop through each workbook
-
-On Error Resume Next
-
-Application.ScreenUpdating = False
-
-'Opens the folder picker dialog to allow user selection
-
-With Application.FileDialog(msoFileDialogFolderPicker)
-
-.Title = "Please select a folder"
-
-.Show
-
-.AllowMultiSelect = False
-
-   If .SelectedItems.Count = 0 Then 'If no folder is selected, abort
-
-MsgBox "You did not select a folder"
-
-      Exit Sub
-
-   End If
-
-MyFolder = .SelectedItems(1) & "\" 'Assign selected folder to MyFolder
-
-
-
-End With
-
-MyFile = Dir(MyFolder) 'DIR gets the first file of the folder
-
-'Loop through all files in a folder until DIR cannot find anymore
-
-Workbooks.Add
-ActiveWorkbook.SaveAs Filename:=MyFolder & "FlightInfo.xlsx", FileFormat:= _
-        xlOpenXMLWorkbook, CreateBackup:=False
-
-''''''''''''''''''''''''''
-
-
-
-    Dim minutes As Integer
-    Dim Full As Boolean
 
 
 
 
-Dim counter As Integer
-counter = 0
 
-
-
-Do While MyFile <> ""
-
-   'Opens the file and assigns to the wbk variable for future use
-
-    If MyFile <> "FlightInfo.xlsx" Then
-   Set wbk = Workbooks.Open(Filename:=MyFolder & MyFile)
-
-   'Replace the line below with the statements you would want your macro to perform
-   
-   If counter = 1 Then
-        If MsgBox("Is This A Full Flight", vbQuestion + vbYesNo, "Full Flight?") = vbYes Then
-            Full = True
-            minutes = InputBox("Minutes Removed from the Full Flight", "Minutes", 10) 'Default 10 min
-        Else
-            Full = False
-            minutes = 0
-        End If
-    End If
-
-
-Call DataGather(Full, minutes)
-
-
-
-
-Windows("FlightInfo.xlsx").Activate
-Range("A2").Select
-If Selection.Value = Empty Then
-ActiveSheet.Paste
-Else
-Selection.End(xlDown).Offset(1, 0).Select
-ActiveSheet.Paste
+Dim BusData() As Variant
+Dim FTI() As Variant
+Dim ASix() As Variant
+Dim j As Integer
+Dim wksnm As String
+Dim b As Integer
+Dim n As Integer
+Dim m As Integer
+ 
+b = 0
+n = 0
+m = 0
+ 
+WS_count = ActiveWorkbook.Worksheets.Count
+For j = 1 To WS_count
+Worksheets(j).Select
+wksnm = Worksheets(j).Name
+ 
+    ReDim Nme(Len(wksnm) - 1)
+    For I = 1 To Len(wksnm)
+    Nme(I - 1) = Mid(wksnm, I, 1)
+    Next I
+If Nme(0) = "X" And Nme(1) = "A" Then
+k = k + 1
+ReDim Preserve BusData(k - 1) As Variant
+    BusData(k - 1) = wksnm
+ElseIf Nme(0) = "X" Then
+n = n + 1
+    ReDim Preserve FTI(n - 1) As Variant
+    FTI(n - 1) = wksnm
+ElseIf Nme(0) = "A" Then
+m = m + 1
+    ReDim Preserve ASix(m - 1) As Variant
+    ASix(m - 1) = wksnm
+End If
+Next j
+ 
+If k = 0 Then
+BusData = Array("")
 End If
 
-If counter = 1 Then
-    Windows(MyFile).Activate
-    Worksheets("data").Range("B1").Select
-    Worksheets("data").Range(Selection, Selection.End(xlToRight)).Select
-    Selection.Copy
-    Windows("FlightInfo.xlsx").Activate
-    Range("B1").Select
-    ActiveSheet.Range("A1").ColumnWidth = 25
-    ActiveSheet.Paste
+If n = 0 Then
+FTI = Array("")
+End If
+
+If m = 0 Then
+ASix = Array("")
 End If
 
 
-wbk.Close savechanges:=True
 
-End If
-MyFile = Dir 'DIR gets the next file in the folder
-
-counter = counter + 1
-
-
-
-Loop
-
-Application.ScreenUpdating = True
-
-
-Windows("FlightInfo.xlsx").Activate
-ActiveWorkbook.SaveAs Filename:=MyFolder & "FlightInfo.csv", FileFormat:=xlCSVUTF8, _
-        CreateBackup:=False
+    Dim sheet As Variant
+    Dim arrCounter As Integer
+    Dim names(0 To 2) As String
+    
+    
+    
+    names(0) = "BusData"
+    names(1) = "FTI"
+    names(2) = "ASix"
+    
+    arrCounter = 0
 
 
-MsgBox "DONE"
-
-
+    sheet = Array(BusData, FTI, ASix)
+    
+    WS_count = ActiveWorkbook.Worksheets.Count
+    paths = Application.ActiveWorkbook.Path + "\"
+    current = Application.ActiveWorkbook.Name
+    'Creating new sheet named 'data'
+    Sheets.Add(After:=Sheets(WS_count)).Name = "data"
+    'Dim I As Integer
+    For Each arr In sheet
+        For I = 1 To WS_count
+            Worksheets(I).Select
+            If IsInArray(Worksheets(I).Name, arr) Then
+                'grab values from a sheet
+                Worksheets(I).Range("B1").Select
+                Worksheets(I).Range(Selection, Selection.End(xlToRight)).Select
+                Worksheets(I).Range(Selection, Selection.End(xlDown)).Select
+                Selection.Copy
+                'paste values into 'data' sheet
+                Sheets("data").Select
+                Worksheets("data").Range("B1").Select
+                If Selection.Value = Empty Then 'fist time case
+                    Worksheets("data").Paste
+                    'adding times
+                    Sheets(I).Select
+                    Worksheets(I).Range("A4").Select
+                    Worksheets(I).Range(Selection, Selection.End(xlDown)).Select
+                    Selection.Copy
+                    Sheets("data").Select
+                    Worksheets("data").Range("A4").Select
+                    Worksheets("data").Paste
+                    Worksheets("data").Range("A1").ColumnWidth = 25
+                Else
+                    Selection.End(xlToRight).Offset(0, 1).Select
+                    Worksheets("data").Paste
+                End If
+            End If
+        Next I
+        'add new depending on the type of data
+        Workbooks.Add
+        ActiveWorkbook.SaveAs Filename:=paths & names(arrCounter) & ".xlsx", FileFormat:=xlOpenXMLWorkbook, CreateBackup:=False
+        Set wbk = Workbooks.Open(Filename:=paths & names(arrCounter) & ".xlsx")
+        'copying
+        Workbooks(current).Activate
+        Worksheets("data").Activate
+        ActiveSheet.Range("A1").Select
+        ActiveSheet.Range(Selection, Selection.End(xlToRight).End(xlToRight).End(xlDown)).Select
+        Selection.Cut
+        'pasting
+        Windows(names(arrCounter) & ".xlsx").Activate
+        ActiveSheet.Range("A1").Select
+        ActiveSheet.Paste
+        ActiveSheet.Range("A1").ColumnWidth = 25
+        wbk.Close savechanges:=True
+        arrCounter = arrCounter + 1
+    Next arr
 End Sub
 
+Function IsInArray(stringToBeFound As String, arr As Variant) As Boolean
+    IsInArray = (UBound(Filter(arr, stringToBeFound)) > -1)
+End Function
