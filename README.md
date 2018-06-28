@@ -9,7 +9,7 @@ SetUp:
 - Again click on the drop down under 'Macros' and click on 'Stop Recording Macro'
 - Go to the developer tab and click on 'Visual Basic' all the way to the left
 - Expand 'VBAProject (Personal.XLSB)' then expand 'modules'
-- Click on the newly created module and paste CollectData() (found in this github) under the 'End Sub' in the new module and save
+- Click on the newly created module and paste CollectData() (found in this github) over everything in the module
 
 
 Implementation:
