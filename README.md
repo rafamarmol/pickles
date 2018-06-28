@@ -4,7 +4,7 @@ SetUp:
 - Open a new excel worksheet
 - Go to the view tab and click on the drop down under 'Macros' and click on 'Record Macro'
 - Name it 'CollectData"
-- For shortcut key input 'Ctrl+Shift+K'
+- For shortcut key input 'Ctrl+Shift+D'
 - IMPORTANT : Store macro in 'Personal Macro WorkBook'
 - Again click on the drop down under 'Macros' and click on 'Stop Recording Macro'
 - Go to the developer tab and click on 'Visual Basic' all the way to the left
