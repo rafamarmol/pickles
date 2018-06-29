@@ -78,11 +78,13 @@ End If
     WS_count = ActiveWorkbook.Worksheets.Count
     paths = Application.ActiveWorkbook.Path + "\"
     current = Application.ActiveWorkbook.Name
-    'Creating new sheet named 'data'
-    Sheets.Add(After:=Sheets(WS_count)).Name = "data"
-    'Dim I As Integer
     For Each arr In sheet
+        Workbooks.Add
+        ActiveWorkbook.SaveAs Filename:=paths & names(arrCounter) & ".xlsx", FileFormat:=xlOpenXMLWorkbook, CreateBackup:=False
+        Set wbk = Workbooks.Open(Filename:=paths & names(arrCounter) & ".xlsx")
         For I = 1 To WS_count
+            Workbooks(current).Activate
+            Worksheets(I).Activate
             Worksheets(I).Select
             If IsInArray(Worksheets(I).Name, arr) Then
                 'grab values from a sheet
@@ -91,40 +93,27 @@ End If
                 Worksheets(I).Range(Selection, Selection.End(xlDown)).Select
                 Selection.Cut
                 'paste values into 'data' sheet
-                Sheets("data").Select
-                Worksheets("data").Range("B1").Select
+                Windows(names(arrCounter) & ".xlsx").Activate
+                ActiveSheet.Range("B1").Select
                 If Selection.Value = Empty Then 'fist time case
-                    Worksheets("data").Paste
+                    ActiveSheet.Paste
                     'adding times
+                    Workbooks(current).Activate
+                    Worksheets(I).Select
                     Sheets(I).Select
                     Worksheets(I).Range("A4").Select
                     Worksheets(I).Range(Selection, Selection.End(xlDown)).Select
                     Selection.Cut
-                    Sheets("data").Select
-                    Worksheets("data").Range("A4").Select
-                    Worksheets("data").Paste
-                    Worksheets("data").Range("A1").ColumnWidth = 25
+                    Windows(names(arrCounter) & ".xlsx").Activate
+                    ActiveSheet.Range("A4").Select
+                    ActiveSheet.Paste
+                    ActiveSheet.Range("A1").ColumnWidth = 25
                 Else
                     Selection.End(xlToRight).Offset(0, 1).Select
-                    Worksheets("data").Paste
+                    ActiveSheet.Paste
                 End If
             End If
         Next I
-        'add new depending on the type of data
-        Workbooks.Add
-        ActiveWorkbook.SaveAs Filename:=paths & names(arrCounter) & ".xlsx", FileFormat:=xlOpenXMLWorkbook, CreateBackup:=False
-        Set wbk = Workbooks.Open(Filename:=paths & names(arrCounter) & ".xlsx")
-        'copying
-        Workbooks(current).Activate
-        Worksheets("data").Activate
-        ActiveSheet.Range("A1").Select
-        ActiveSheet.Range(Selection, Selection.End(xlToRight).End(xlToRight).End(xlDown)).Select
-        Selection.Cut
-        'pasting
-        Windows(names(arrCounter) & ".xlsx").Activate
-        ActiveSheet.Range("A1").Select
-        ActiveSheet.Paste
-        ActiveSheet.Range("A1").ColumnWidth = 25
         wbk.Close savechanges:=True
         arrCounter = arrCounter + 1
     Next arr
