@@ -1,8 +1,8 @@
-Sub CollectData()
+Sub CollectDataBETA()
 '
 ' CollectData Macro
 '
-' Keyboard Shortcut: Ctrl+Shift+D
+' Keyboard Shortcut: Ctrl+Shift+A
 '
 Call GoThrough
 End Sub
@@ -19,7 +19,7 @@ WS_Count = ActiveWorkbook.Worksheets.Count
             Worksheets(I).Range("B1:B2").Select
             Worksheets(I).Range(Selection, Selection.End(xlToRight)).Select
             Worksheets(I).Range(Selection, Selection.End(xlDown)).Select
-            Selection.Copy
+            Selection.Cut
             'paste values into 'data' sheet
             Sheets("data").Select
             Worksheets("data").Range("B1").Select
@@ -29,7 +29,7 @@ WS_Count = ActiveWorkbook.Worksheets.Count
                 Sheets(I).Select
                 Worksheets(I).Range("A4").Select
                 Worksheets(I).Range(Selection, Selection.End(xlDown)).Select
-                Selection.Copy
+                Selection.Cut
                 Sheets("data").Select
                 Worksheets("data").Range("A4").Select
                 Worksheets("data").Paste
@@ -55,22 +55,6 @@ WS_Count = ActiveWorkbook.Worksheets.Count
         Range(Selection, Selection.End(xlToRight)).Delete
     End If
     
-
-
-    'deletes columns
-    Dim myrng As Range
-    Dim WhatToFind As Variant
-    Dim lastCol As Integer
-    Sheets("data").Select
-    Set myrng = Worksheets("data").Range("B1").End(xlToRight)
-    WhatToFind = Array("SSM", "BLANK", "[DEC]", "[DIC]", "%")
-    lastCol = myrng.Columns(myrng.Columns.Count).Column
-    For j = lastCol To 2 Step -1
-        If IsInArray(Worksheets("data").Cells(3, j).Value, WhatToFind) Or IsInArray(Worksheets("data").Cells(2, j).Value, WhatToFind) Or IsInArray(Worksheets("data").Cells(1, j).Value, WhatToFind) Then
-            Worksheets("data").Columns(Worksheets("data").Cells(3, j).Column).EntireColumn.Delete
-        End If
-    Next j
-    
     'deleting 2nd and 3rd row
     Sheets("data").Select
     Worksheets("data").Rows(3).EntireRow.Delete
@@ -92,11 +76,7 @@ End Function
 
 
 Sub GoThrough()
-'
-' Macro1 Macro
-'
-' Keyboard Shortcut: Ctrl+Shift+K
-'
+
 Dim MyFolder As String 'Path collected from the folder picker dialog
 
    Dim MyFile As String 'Filename obtained by DIR function
@@ -126,8 +106,6 @@ MsgBox "You did not select a folder"
    End If
 
 MyFolder = .SelectedItems(1) & "\" 'Assign selected folder to MyFolder
-
-
 
 End With
 
