@@ -33,6 +33,10 @@ WS_Count = ActiveWorkbook.Worksheets.Count
                 Worksheets("data").Range("A4").Select
                 Worksheets("data").Paste
                 Worksheets("data").Range("A1").ColumnWidth = 25
+                Worksheets(I).Range("A2").Copy
+                Sheets("data").Select
+                Worksheets("data").Range("A1").Select
+                Worksheets("data").Paste
             Else
                 Selection.End(xlToRight).Offset(0, 1).Select
                 Worksheets("data").Paste
@@ -61,7 +65,7 @@ WS_Count = ActiveWorkbook.Worksheets.Count
     
     
     'cuts everything except first row for GoThrough() module
-    Worksheets("data").Range("A2").Select
+    Worksheets("data").Range("A1").Select
     Worksheets("data").Range(Selection, Selection.End(xlToRight)).Select
     Worksheets("data").Range(Selection, Selection.End(xlDown)).Select
     Selection.Cut
@@ -117,12 +121,15 @@ MyFile = Dir(MyFolder) 'DIR gets the first file of the folder
 'Loop through all files in a folder until DIR cannot find anymore
 
 
+
 ''''''''''''''''''''''''''
 
 
 
     Dim minutes As Integer
     Dim Full As Boolean
+
+
 
 
 Dim counter As Integer
@@ -153,43 +160,40 @@ Do While MyFile <> ""
 Call DataGather(Full, minutes)
 
 
+
+
 Windows("FlightInfo.xlsx").Activate
-Range("A2").Select
+Range("A1").Select
 If Selection.Value = Empty Then
 ActiveSheet.Paste
 Else
 Selection.End(xlDown).Offset(1, 0).Select
 ActiveSheet.Paste
+ActiveSheet.Range("A1").ColumnWidth = 25
 End If
 
-If counter = 1 Then
-    Windows(MyFile).Activate
-    Worksheets("data").Range("B1").Select
-    Worksheets("data").Range(Selection, Selection.End(xlToRight)).Select
-    Selection.Copy
-    Windows("FlightInfo.xlsx").Activate
-    Range("B1").Select
-    ActiveSheet.Range("A1").ColumnWidth = 25
-    ActiveSheet.Paste
-End If
 
-wbk.Close savechanges:=True
+
 
 End If
 MyFile = Dir 'DIR gets the next file in the folder
 
 counter = counter + 1
 
+
+
 Loop
 
 Application.ScreenUpdating = True
+
 
 Windows("FlightInfo.xlsx").Activate
 ActiveWorkbook.SaveAs Filename:=MyFolder & "FlightInfo.csv", FileFormat:=xlCSVUTF8, _
         CreateBackup:=False
 
+wbk.Close savechanges:=True
+
 MsgBox "DONE"
 
+
 End Sub
-
-
