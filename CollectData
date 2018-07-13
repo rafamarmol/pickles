@@ -6,7 +6,7 @@ Sub CollectDataBETA()
 Call GoThrough
 End Sub
 
-Sub DataGather(Full As Boolean, minutes As Integer)
+Sub DataGather(Full As Boolean, minutes As Double)
 WS_Count = ActiveWorkbook.Worksheets.Count
     'Creating new sheet named 'data'
     Sheets.Add(After:=Sheets(WS_Count)).Name = "data"
@@ -46,8 +46,8 @@ WS_Count = ActiveWorkbook.Worksheets.Count
 
     'deleting rows
     If Full Then
-        Dim remove As Integer
-        remove = 600 * minutes
+        Dim remove As Double
+        remove = 600 * minutes#
         Worksheets("data").Cells(remove + 3, 1).Select
         Worksheets("data").Range(Selection, "A4").Select
         Worksheets("data").Range(Selection, Selection.End(xlToRight)).Delete
@@ -126,7 +126,7 @@ MyFile = Dir(MyFolder) 'DIR gets the first file of the folder
 
 
 
-    Dim minutes As Integer
+    Dim minutes As Double
     Dim Full As Boolean
 
 
