@@ -5,15 +5,47 @@ Sub CollectDataBETA()
 '
 Call GoThrough
 End Sub
+Function IsValidFile() As Boolean
 
+WS_Count = ActiveWorkbook.Worksheets.Count
+Dim valCheck As Double
+valCheck = -1
+Final = True
+For I = 1 To WS_Count
+    Worksheets(I).Select
+    If ValidSheet(Worksheets(I).name) And valCheck = -1 Then
+        valCheck = Cells(Rows.Count, 2).End(xlUp).Row
+    ElseIf ValidSheet(Worksheets(I).name) Then
+        If (valCheck <> Cells(Rows.Count, 2).End(xlUp).Row) Then
+            Final = False
+            GoTo Ender
+        End If
+    End If
+Next I
+
+Ender:
+IsValidFile = Final
+End Function
+
+
+Function ValidSheet(name As String) As Boolean
+    If name = "Summary" Or name = "Run Info" Then
+        ValidSheet = False
+    Else
+        ValidSheet = True
+    End If
+End Function
 Sub DataGather(Full As Boolean, minutes As Double)
 WS_Count = ActiveWorkbook.Worksheets.Count
     'Creating new sheet named 'data'
-    Sheets.Add(After:=Sheets(WS_Count)).Name = "data"
+    Sheets.Add(After:=Sheets(WS_Count)).name = "data"
     Dim I As Integer
     For I = 1 To WS_Count
         Worksheets(I).Select
-        If Worksheets(I).Name <> "Summary" And Worksheets(I).Name <> "Run Info" Then
+        If Not IsValidFile() Then
+            MsgBox (MyFile & " Is NOT a valid file. Has offset worksheets.")
+        End If
+        If Worksheets(I).name <> "Summary" And Worksheets(I).name <> "Run Info" Then
             'grab values from a sheet
             Worksheets(I).Range("B1:B2").Select
             Worksheets(I).Range(Selection, Selection.End(xlToRight)).Select
@@ -197,3 +229,4 @@ MsgBox "DONE"
 
 
 End Sub
+
